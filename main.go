@@ -14,42 +14,42 @@ func main() {
 	fontData := string(fContent)
 	font := strings.Split(fontData, "\n")
 	//read file for reverse
-	testFile := "test00"
-	testContent, err := os.ReadFile(testFile + ".txt")
+	textFile := "test00"
+	textContent, err := os.ReadFile(textFile + ".txt")
 	check(err)
-	testData := string(testContent)
-	test := strings.Split(testData, "\n")
-	fmt.Println(len(test[0]), test[0])
-	pos := 0
-	count := 0
-	var word []int
-	for i := 1; i < len(font); i = i + 9 {
-		l := len(font[i])
-	out:
-		for j := 0; j < 9; j++ {
-			if len(test[j]) >= l+pos {
-				if test[j][pos:l+pos] == font[i+j] {
-					count = count + 1
+	textData := string(textContent)
+	text := strings.Split(textData, "\n")
+	reverse(font, text, 0, 0, 1)
+	fmt.Println()
+
+}
+func reverse(font []string, text []string, pos int, count int, start int) {
+	if pos != len(text[count]) {
+		l := len(font[start])
+		if pos+l <= len(text[count]) {
+			//fmt.Println("pos", pos, pos+l)
+			if count < 7 {
+				//fmt.Println("count", count)
+				if text[count][pos:l+pos] == font[start+count] {
+					//fmt.Println("if")
+					reverse(font, text, pos, count+1, start)
 				} else {
-					count = 0
-					break out
+					//fmt.Println("el")
+					reverse(font, text, pos, 0, start+9)
 				}
+			} else {
+				r := ((start - 1) / 9) + 32
+				fmt.Printf("%c", r)
+				//fmt.Println("newpos", pos+l)
+				reverse(font, text, pos+l, 0, 1)
 			}
-		}
-		//fmt.Println("Count ", count, i)
-		if count == 8 {
-			word = append(word, i)
-			r := ((i - 1) / 9) + 32
-			fmt.Printf("%c", r)
-			count = 0
-			pos = pos + l
-			if pos != len(test[0]) {
-				i = -8
-			}
+		} else {
+			reverse(font, text, pos, 0, start+9)
 		}
 	}
-	fmt.Println()
+
 }
+
 func check(e error) {
 	if e != nil {
 		panic(e)
