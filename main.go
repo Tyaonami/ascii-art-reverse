@@ -7,30 +7,36 @@ import (
 )
 
 func main() {
-	//read font art
-	fContent, err := os.ReadFile("standard.txt")
-	check(err)
-	fontData := string(fContent)
-	font := strings.Split(fontData, "\n")
-	//read art file for reverse
-	textFile := os.Args[1][10:]
-	textContent, err := os.ReadFile(textFile)
-	check(err)
-	textData := string(textContent)
-	text := strings.Split(textData, "\n")
-
-	if len(text) > 9 {
-		for i := 0; i < len(text)-1; {
-
-			reverse(font, text[i:i+8], 0, 0, 1)
+	ok, er := checkArgs() // the function checks the validity of the arguments
+	if ok == true {       // if we get from checkArgs true, work starts =)
+		//read font art
+		fContent, err := os.ReadFile("standard.txt")
+		check(err)
+		fontData := string(fContent)
+		font := strings.Split(fontData, "\n")
+		//read art file for reverse
+		textFile := os.Args[1][10:]
+		textContent, err := os.ReadFile(textFile)
+		check(err)
+		textData := string(textContent)
+		text := strings.Split(textData, "\n")
+		if len(text) > 9 {
+			for i := 0; i < len(text)-1; {
+				if len(text[i]) > 0 {
+					reverse(font, text[i:i+8], 0, 0, 1)
+					fmt.Println()
+					i = i + 8
+				} else {
+					fmt.Println()
+					i = i + 1
+				}
+			}
+		} else {
+			reverse(font, text, 0, 0, 1)
 			fmt.Println()
-			i = i + 9
-
 		}
-
 	} else {
-		reverse(font, text, 0, 0, 1)
-		fmt.Println()
+		fmt.Print(er)
 	}
 
 }
@@ -59,4 +65,15 @@ func check(e error) {
 	if e != nil {
 		panic(e)
 	}
+}
+
+// the last argument must be started from --output= and contains at least 1 character
+func checkArgs() (bool, string) {
+	ok := true
+	s := ""
+	if len(os.Args) != 2 || len(os.Args[1]) < 9 || os.Args[1][0:10] != "--reverse=" {
+		ok = false
+		s = "Usage: go run . [OPTION]\n\nEX: go run main.go --reverse=<fileName>\n"
+	}
+	return ok, s
 }
